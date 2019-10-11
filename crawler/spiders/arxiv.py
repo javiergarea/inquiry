@@ -1,5 +1,6 @@
 import scrapy
-
+import io
+import PyPDF2
 
 class ArxivSpider(scrapy.Spider):
     name = "arxiv"
@@ -9,6 +10,12 @@ class ArxivSpider(scrapy.Spider):
         'https://arxiv.org/list/physics/1901?500',
         'https://arxiv.org/list/stat/1901?500',
     ]
+
+    def get_pdf_content_lines(response):
+        reader = PyPDF2.PdfFileReader(io.BytesIO(response.body))
+        for page in pdf_reader.pages: 
+            for line in page.extractText().splitlines():
+                yield line
 
     def parse(self, response):
         for item in response.css('dd > div.meta'):
