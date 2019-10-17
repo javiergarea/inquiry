@@ -1,14 +1,12 @@
 import scrapy
 import io
 import PyPDF2
-from twisted.internet import defer
-from urllib.request import urlopen
 
 ARXIV = 'https://arxiv.org'
-CS_PATH = '/list/cs/1901?500'
-MATH_PATH = '/list/math/1901?500'
-PHYSICS_PATH = '/list/physics/1901?500'
-STAT_PATH = '/list/stat/1901?500'
+CS_PATH = '/list/cs/1901?skip=0&show=100'
+MATH_PATH = '/list/math/1901?skip=0&show=100'
+PHYSICS_PATH = '/list/physics/1901?skip=0&show=100'
+STAT_PATH = '/list/stat/1901?skip=0&show=100'
 
 
 class ArxivSpider(scrapy.Spider):
