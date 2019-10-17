@@ -4,56 +4,56 @@ import PyPDF2
 from twisted.internet import defer
 from urllib.request import urlopen
 
+ARXIV = 'https://arxiv.org'
+CS_PATH = '/list/cs/1901?500'
+MATH_PATH = '/list/math/1901?500'
+PHYSICS_PATH = '/list/physics/1901?500'
+STAT_PATH = '/list/stat/1901?500'
+
 
 class ArxivSpider(scrapy.Spider):
-    name = "arxiv"
+    name = 'arxiv'
     start_urls = [
-        'https://arxiv.org/list/math/1901?500',
-        #'https://arxiv.org/list/cs/1901?500',
-        #'https://arxiv.org/list/physics/1901?500',
-        #'https://arxiv.org/list/stat/1901?500',
+        ARXIV + CS_PATH,
+        # ARXIV + MATH_PATH,
+        # ARXIV + PHYSICS_PATH,
+        # ARXIV + STAT_PATH
     ]
 
-    def __init__(self):
-        self.docID = 0
-        self.abstract = ''
-        self.arxiv = "https://arxiv.org"
-
     def parse(self, response):
+        yield scrapy.Request(url=response.url, callback=self.parse_basic)
+
+    def parse_basic(self, response):
+        docID = 0
         list_links = response.css('span.list-identifier')
 
         for item in response.css('dd > div.meta'):
-            list_authors = item.css("div.list-authors")
-            list_authors = list_authors.css("a")
+            list_authors = item.css('div.list-authors')
+            list_authors = list_authors.css('a')
             list_titles = item.css('div.list-title')
             for x in range(len(list_titles)):
                 links = list_links[x].css('a::attr(href)').extract()
-                pdf_url = self.arxiv+links[1]
-                abstract_url = self.arxiv+links[0]
-                yield {
-                    'docID': self.docID,
+                meta_data = {
+                    'links': links,
+                    'pdf_url': ARXIV + links[1],
+                    'abstract_url': ARXIV + links[0],
+                    'docID': docID,
                     'title': list_titles[x].css('div.list-title::text').extract()[1][:-2],
-                    'authors': list_authors.css("a::text").extract(),
+                    'authors': list_authors.css('a::text').extract(),
                     'subject': item.css('span.primary-subject::text').get(),
-                    'other-subjects': item.css('div.list-subjects::text').extract()[2][2:-2],
-                    'abstract': self.parse_abstract(abstract_url),
-                    'pdf': pdf_url
+                    'other_subjects': item.css('div.list-subjects::text').extract()[2][2:-2]
                 }
-                self.docID+=1
-                #yield scrapy.Request(url=pdf_url, callback=self.parse_pdf, priority=1)
+                yield scrapy.Request(url=ARXIV + links[0], callback=self.parse_abstract, meta=meta_data)
+                docID += 1
 
-    def parse_abstract(self, url):
-        response = urlopen(url).read() 
-        return response.xpath('//*[@id="abs"]/blockquote/text()').extract()[0]
+    def parse_abstract(self, response):
+        response.meta.update({'abstract': response.xpath(
+            '//*[@id="abs"]/blockquote/text()').extract()[0]})
+        yield scrapy.Request(url=response.meta.get('pdf_url'), callback=self.parse_pdf, meta=response.meta)
 
     def parse_pdf(self, response):
         reader = PyPDF2.PdfFileReader(io.BytesIO(response.body))
-        for page in reader.pages:
-            for line in page.extractText().splitlines():
-                yield line
-
-
-        #next_page = response.css('li.next a::attr(href)').get()
-        # if next_page is not None:
-        #  next_page = response.urljoin(next_page)
-        #  yield scrapy.Request(next_page, callback=self.parse)
+        pdf = [
+            line for page in reader.pages for line in page.extractText().splitlines()]
+        response.meta.update({'pdf': pdf})
+        yield response.meta

@@ -12,7 +12,7 @@ import os
 class JsonWriterPipeline(object):
 
     def open_spider(self, spider):
-        self.file = open('items.jl', 'w')
+        self.file = open('items.jsonl', 'w')
 
     def close_spider(self, spider):
         self.file.close()
@@ -21,10 +21,3 @@ class JsonWriterPipeline(object):
         line = json.dumps(dict(item)) + "\n"
         self.file.write(line)
         return item
-
-
-class JsonFormatter(object):
-
-	def close_spider(self, spider):
-		os.system("cat items.jl | jq '.' | tee items.jsonl > /dev/null")
-		os.remove("items.jl")

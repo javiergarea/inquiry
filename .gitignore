@@ -105,4 +105,4 @@ venv.bak/
 
 # jsonl
 *.jsonl
-*-jl
+*.jl

@@ -66,8 +66,7 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # Number is order
 ITEM_PIPELINES = {
-    'crawler.pipelines.JsonWriterPipeline': 1,
-    'crawler.pipelines.JsonFormatter': 2
+    'crawler.pipelines.JsonWriterPipeline': 1
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
