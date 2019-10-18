@@ -18,10 +18,8 @@ class ArxivSpider(scrapy.Spider):
         # ARXIV + STAT_PATH
     ]
 
-    def parse(self, response):
-        yield scrapy.Request(url=response.url, callback=self.parse_basic)
 
-    def parse_basic(self, response):
+    def parse(self, response):
         docID = 0
         list_links = response.css('span.list-identifier')
 
@@ -53,5 +51,6 @@ class ArxivSpider(scrapy.Spider):
         reader = PyPDF2.PdfFileReader(io.BytesIO(response.body))
         pdf = [
             line for page in reader.pages for line in page.extractText().splitlines()]
+        pdf = ''.join(pdf)
         response.meta.update({'pdf': pdf})
-        yield response.meta
+        return response.meta
