@@ -21,7 +21,6 @@ class ArxivSpider(scrapy.Spider):
         self.doc_id = 0
         self.link = 0
 
-
     def parse(self, response):
         list_links = response.css('span.list-identifier')
         for item in response.css('dd > div.meta'):
@@ -37,7 +36,7 @@ class ArxivSpider(scrapy.Spider):
                 'other_subjects': item.css('div.list-subjects::text').extract()[2][2:-2]
             }
             yield scrapy.Request(url=ARXIV + links[0], callback=self.parse_abstract,
-                                 meta=meta_data, dont_filter=True)
+                                 meta=meta_data)
             self.doc_id += 1
             self.link += 1
 
@@ -45,7 +44,7 @@ class ArxivSpider(scrapy.Spider):
         response.meta.update({'abstract': response.xpath(
             '//*[@id="abs"]/blockquote/text()').extract()[0]})
         yield scrapy.Request(url=response.meta.get('pdf_url'), callback=self.parse_pdf,
-                             meta=response.meta, dont_filter=True)
+                             meta=response.meta)
 
     def parse_pdf(self, response):
         reader = PyPDF2.PdfFileReader(io.BytesIO(response.body))
