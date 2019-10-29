@@ -7,11 +7,12 @@
 
 
 import json
+import os
 
 class JsonWriterPipeline(object):
 
     def open_spider(self, spider):
-        self.file = open('items.jl', 'w')
+        self.file = open('items.jsonl', 'w')
 
     def close_spider(self, spider):
         self.file.close()
