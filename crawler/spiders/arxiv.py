@@ -17,6 +17,7 @@ class ArxivSpider(scrapy.Spider):
         # ARXIV + PHYSICS_PATH,
         # ARXIV + STAT_PATH
     ]
+
     def __init__(self):
         self.doc_id = 0
         self.link = 0

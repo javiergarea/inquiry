@@ -1,7 +1,9 @@
 from django import forms
 
+
 class BasicSearchForm(forms.Form):
     keywords = forms.CharField(label="", initial="language models", max_length=100)
+
 
 class AdvancedSearchForm(forms.Form):
     title = forms.CharField(label='Title', max_length=100, required=False)
