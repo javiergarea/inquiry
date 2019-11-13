@@ -14,9 +14,9 @@ def index(request):
 def search(request):
     print(request.GET)
     service = InquiryService()
-    ctx = service.search_by_keywords(request.GET.get('keywords'))
-    cdict = {"title": c for c in ctx}
-    return render(request, 'search.html', cdict)
+    result = service.search_by_keywords(request.GET.get('keywords'))
+    ctx = {"data": result}
+    return render(request, 'search.html', ctx)
 
 
 def about(request):
