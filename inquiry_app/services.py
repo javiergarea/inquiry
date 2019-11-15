@@ -20,7 +20,7 @@ class InquiryService:
                         minimum_should_match=1)
         search = search.query(final_query)
 
-        search = search.source(['title', 'authors', 'subject', 'other_subjects', 'abstract'])
+        search = search.source(['title', 'authors', 'subject', 'other_subjects', 'abstract', 'pdf_url'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
         suggestion = search.suggest('suggestion', keywords, term={'field': 'pdf'})

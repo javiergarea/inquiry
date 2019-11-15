@@ -40,38 +40,59 @@
   </header>
 
   <main role="main">
+    <div class="p-4">
     {% for x in data %}
-      <div class="p-5">
-        <div class="p-1"> 
-          {{x.title}}
-        </div>
-        <div class="p-1">
-          <ul>
-            {% for author in x.authors %}
-              <li>{{ author }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-        <div class="p-1">
-          {% if x.fragment %}
-            {% for fragment in x.fragment %}
-              <div class="p-1">
-                {{fragment | safe}}
-              </div>
-            {% endfor %}
-          {% else %}
-            <div class="p-1">
-              {{ x.abstract }}
+      <div class="py-4">
+        <div class="card" style="width: 72rem;">
+          <div class="card-body">
+            <h4>
+              <a href="{{x.abstract_url}}" class="link">
+                <font color="blue">{{x.title}}</font>
+              </a>
+            </h4>
+            <div>
+              <a href="{{x.pdf_url}}" class="link text-success">{{x.pdf_url}}</a>
             </div>
-          {% endif %}
-        </div>
-        <div class="p-1"> >
-          {{x.subject}}
-          <br>
-          {{x.other_subjects}}
+            <div class="p-1">
+              <ul>
+                {% for author in x.authors %}
+                  <li>{{ author }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="p-1">
+              {% if x.fragment %}
+                {% for fragment in x.fragment %}
+                  <div class="p-1">
+                    <div id="summary">
+                      <p class="collapse" id="collapseSummary">
+                        {{fragment | safe}}
+                      </p>
+                      <a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
+                    </div>
+                  </div>
+                {% endfor %}
+                {% else %}
+                <div class="container">
+                  <div id="summary">
+                    <p class="collapse" id="collapseSummary">
+                      {{x.abstract}}
+                    </p>
+                  <a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
+                </div>
+              {% endif %}
+            </div>
+            <div class="p-1">
+              <blockquote class="blockquote mb-0">
+                <div class="blockquote-footer">{{x.subject}} and {{x.other_subjects}}</div> 
+              </blockquote>
+              <br>
+            </div>
+          </div>
         </div>
       </div>
     {% endfor %}
+    </div>
   </main>
 
   <footer class="page-footer font-small border">
