@@ -22,7 +22,7 @@ class InquiryService:
         )
         search = search.query(final_query)
 
-        search = search.source(['title','authors', 'subject', 'other_subjects'])
+        search = search.source(['title','authors', 'subject', 'other_subjects', 'abstract'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
         suggestion = search.suggest('suggestion', keywords, term={'field': 'pdf'})
@@ -47,7 +47,7 @@ class InquiryService:
         if authors:
             query_authors = Q("wildcard", authors="*"+authors+"*")
 
-        if subject:
+        if subject and subject!='all':
             query_subject = Q("wildcard", subject="*"+subject+".*")
 
         if abstract:
@@ -66,14 +66,10 @@ class InquiryService:
 
         search = search.query(final_query)
         request = search.execute()
-
-        if abstract:
-            for hit in request:
-                response = hit.to_dict()
+        for hit in request:
+            response = hit.to_dict()
+            if abstract:
                 response.update({'fragment': hit.meta.highlight.abstract}) 
-                yield response
-        else: 
-            for hit in request:
-                response = hit.to_dict()
-                response.update({'fragment': "N"}) 
-                yield response
+            else:
+                response.update({'fragment': []}) 
+            yield response

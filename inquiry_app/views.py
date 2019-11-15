@@ -21,9 +21,9 @@ def search(request):
         if keywords:
             basic_form = BasicSearchForm(request.GET)
             if basic_form.is_valid():
-                result = service.search_by_keywords(basic_form.cleaned_data('keywords'), basic_form.cleaned_data('subject'))
+                result = service.search_by_keywords(basic_form.cleaned_data.get('keywords'), basic_form.cleaned_data.get('subject'))
             else: 
-                raise ValidationError("Invalid title")
+                return render(request, 'index.html',{'basicform':basic_form, 'advancedform':AdvancedSearchForm()})
         else:
             adv_form = AdvancedSearchForm(request.GET)
             if adv_form.is_valid():
@@ -34,11 +34,11 @@ def search(request):
                 subject = adv_form.cleaned_data.get('subject')
                 result = service.search_by_fields(title, authors, abstract, content, subject)
             else: 
-                raise ValidationError("You must specify one")
+                return render(request, 'index.html', {'advancedform':adv_form, 'basicform': BasicSearchForm()})
         ctx = {"data": result}
         return render(request, 'search.html', ctx)
     else: 
-        return render(request, 'index.html',{'basic_form':basic_form,'adv_form':adv_form})
+        return render(request, 'index.html', {'basicform':basic_form,'advancedform':adv_form})
 
 
 def about(request):

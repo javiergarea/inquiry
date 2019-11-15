@@ -53,11 +53,17 @@
           </ul>
         </div>
         <div class="p-1">
-          {% for fragment in x.fragment %}
+          {% if x.fragment %}
+            {% for fragment in x.fragment %}
+              <div class="p-1">
+                {{fragment | safe}}
+              </div>
+            {% endfor %}
+          {% else %}
             <div class="p-1">
-              {{fragment | safe}}
+              {{ x.abstract }}
             </div>
-          {% endfor %}
+          {% endif %}
         </div>
         <div class="p-1"> >
           {{x.subject}}
