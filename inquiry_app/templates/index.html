@@ -45,23 +45,59 @@
   <main role="main">
     <div class="container-fluid text-center">
       <h1 class="p-3">Open Science</h1>
-      <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
-        <div class="input-group form-inline mb-3 justify-content-center">
-          {{ basicform.subject | as_crispy_field }}
-          {{ basicform.keywords | as_crispy_field }}
-          <button type="submit" class="btn btn-primary"> Search </button>
-        </div>
-      </form>
-      <button data-toggle="collapse" data-target="#advancedsearch">Búsqueda avanzada</button>
-      <div id="advancedsearch" class="collapse">
-        <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
-              {{ advancedform | crispy }}
-              <button type="submit" class="btn btn-primary">Search</button>
-              <button type="reset" class="btn btn-secondary">Reset</button>
+      <div id="simpleSearch" class="collapse multi-collapse show">
+        <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
+          <div class="input-group form-inline mb-3 justify-content-center">
+            {{ basicform.subject | as_crispy_field }}
+            {{ basicform.keywords | as_crispy_field }}
+            <button type="submit" class="btn btn-primary"> Search </button>
+          </div>
+        </form>
+      </div>
+      <div class="custom-control custom-switch" data-toggle="collapse" data-target=".multi-collapse" role="button" aria-expanded="false" aria-controls="simpleSearch advancedSearch">
+        <input type="checkbox" class="custom-control-input" id="customSwitches">
+        <label class="custom-control-label" for="customSwitches">Advanced search</label>
+      </div>
+      <div id="advancedSearch" class="collapse multi-collapse">
+        <form name="AdvForm" role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
+          <div class="row justify-content-center">
+            <div class="col-3" name="title">
+              {{ advancedform.title| as_crispy_field }}
+            </div>
+            <div class="col-3" name="authors">
+              {{ advancedform.authors| as_crispy_field }}
+            </div>
+          </div>
+          <div class="col" align="center">
+            <div class="row justify-content-center form-inline">
+              <div class="col-3" name="abstract">
+                {{ advancedform.abstract| as_crispy_field }}
+              </div>
+              <div class="col-2">
+                {{ advancedform.subject| as_crispy_field }}
+              </div>
+            </div>
+            <div class="col-6 centered" name="content">
+              {{ advancedform.content| as_crispy_field }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" onclick="return submitform();">Search</button>
+          <button type="reset" class="btn btn-secondary">Reset</button>
          </form>
       </div>
     </div>
   </main>
+<script type="text/javascript">
+  function submitform() {
+    if ( AdvForm.title.value != null && AdvForm.authors.value != null &&
+         AdvForm.abstract.value != null && AdvForm.content.value != null ){
+         return (true);
+     }
+     alert("You must enter at least one field!");
+     return (false);
+}
+</script>
+
 
   <footer class="page-footer font-small border">
     <div class="footer-copyright text-center p-4">

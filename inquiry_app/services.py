@@ -24,7 +24,7 @@ class InquiryService:
 
         search = search.source(['title','authors', 'subject', 'other_subjects'])
         search = search.highlight_options(order='score')
-        search = search.highlight('abstract', fragment_size=200)
+        search = search.highlight('abstract', fragment_size=400)
         suggestion = search.suggest('suggestion', keywords, term={'field': 'pdf'})
 
         request = search.execute()
@@ -33,23 +33,47 @@ class InquiryService:
             response.update({'fragment': hit.meta.highlight.abstract})
             yield response
 
-    def search_by_fields(self, title, authors, subject, abstract, content):
+    def search_by_fields(self, title, authors, abstract, content, subject):
         search = Search(using=self.es, index="arxiv-index")
-        query_title = Q("match", title=title)
-        query_authors = Q("match", authors=authors)
-        query_subject = Q("match", subject=subject)
-        query_abstract = Q("match", abstract=abstract)
-        query_content = Q("match", pdf=content)
+        query_title = Q()
+        query_authors = Q()
+        query_subject = Q()
+        query_abstract = Q()
+        query_content = Q()
+
+        if title:
+            query_title = Q("wildcard", title="*"+title+"*")
+
+        if authors:
+            query_authors = Q("wildcard", authors="*"+authors+"*")
+
+        if subject:
+            query_subject = Q("wildcard", subject="*"+subject+".*")
+
+        if abstract:
+            query_abstract = Q("match", abstract=abstract)
+            search = search.highlight_options(order='score')
+            search = search.highlight('abstract', fragment_size=400)
+
+        if content:
+            query_content = Q("match", pdf=content)
+
         final_query = Q('bool',
-              should=[query_title, query_authors, query_subject, query_abstract, query_content],
+              must = [query_title, query_authors, query_subject],
+              should=[query_abstract, query_content],
               minimum_should_match=1
         )
+
         search = search.query(final_query)
-        search = search.highlight_options(order='score')
-        search = search.highlight('pdf', fragment_size=200)
         request = search.execute()
 
-        for hit in request:
-            response = hit.to_dict()
-            response.update({'fragment': hit.meta.highlight.pdf}) 
-            yield response
+        if abstract:
+            for hit in request:
+                response = hit.to_dict()
+                response.update({'fragment': hit.meta.highlight.abstract}) 
+                yield response
+        else: 
+            for hit in request:
+                response = hit.to_dict()
+                response.update({'fragment': "N"}) 
+                yield response
