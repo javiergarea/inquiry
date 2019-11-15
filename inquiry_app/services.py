@@ -9,26 +9,28 @@ class InquiryService:
 
     def search_by_keywords(self, keywords, subject):
         search = Search(using=self.es, index="arxiv-index")
-        query_pdf = Q("match", pdf=keywords)
+        query_content = Q("wildcard", abstract="*"+keywords+"*")
         query_subject = Q()
+        query_other = Q()
         if subject:
-            query_subject = Q("wildcard", subject="*"+subject+"*")
+            query_subject = Q("wildcard", subject="*"+subject+".*")
+            query_other = Q("wildcard", other_subjects="*"+subject+".*")
         final_query = Q('bool',
-              must = [query_subject],
-              should = [query_pdf],
+              must = [query_content],
+              should = [query_subject, query_other],
               minimum_should_match = 1
         )
         search = search.query(final_query)
 
         search = search.source(['title','authors', 'subject', 'other_subjects'])
         search = search.highlight_options(order='score')
-        search = search.highlight('pdf', fragment_size=200)
+        search = search.highlight('abstract', fragment_size=200)
         suggestion = search.suggest('suggestion', keywords, term={'field': 'pdf'})
 
         request = search.execute()
         for hit in request:
             response = hit.to_dict()
-            response.update({'fragment': hit.meta.highlight.pdf})
+            response.update({'fragment': hit.meta.highlight.abstract})
             yield response
 
     def search_by_fields(self, title, authors, subject, abstract, content):

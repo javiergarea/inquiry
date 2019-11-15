@@ -52,12 +52,14 @@
           <button type="submit" class="btn btn-primary"> Search </button>
         </div>
       </form>
-      <h5>Advanced search</h5>
-      <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
-            {{ advancedform}}
-            <button type="submit" class="btn btn-primary">Search</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
-       </form>
+      <button data-toggle="collapse" data-target="#advancedsearch">Búsqueda avanzada</button>
+      <div id="advancedsearch" class="collapse">
+        <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
+              {{ advancedform | crispy }}
+              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+         </form>
+      </div>
     </div>
   </main>
 

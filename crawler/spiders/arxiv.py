@@ -31,7 +31,7 @@ class ArxivSpider(scrapy.Spider):
                 'abstract_url': ARXIV + links[0],
                 'doc_id': self.doc_id,
                 'title': item.css('div.list-title')[0]. \
-                    css('div.list-title::text').extract()[1][:-2],
+                    css('div.list-title::text').extract()[1][:-1],
                 'authors': item.css('div.list-authors').css('a').css('a::text').extract(),
                 'subject': item.css('span.primary-subject::text').get(),
                 'other_subjects': item.css('div.list-subjects::text').extract()[2][2:-2]
