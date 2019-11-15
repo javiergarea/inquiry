@@ -44,7 +44,7 @@ class ArxivSpider(scrapy.Spider):
     def parse_abstract(self, response):
         response.meta.update({'abstract': response.xpath(
             '//*[@id="abs"]/blockquote/text()').extract()[0]})
-        response.meta.update({'submit_date': response.css('.dateline::text').get().replace('\n  ','')[8:-1]})
+        response.meta.update({'submit_date': response.css('.dateline::text').get().replace('\n  ','')[20:-1]})
         yield scrapy.Request(url=response.meta.get('pdf_url'), callback=self.parse_pdf,
                              meta=response.meta)
 

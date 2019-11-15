@@ -32,7 +32,9 @@ def search(request):
                 abstract = adv_form.cleaned_data.get('abstract')
                 content = adv_form.cleaned_data.get('content')
                 subject = adv_form.cleaned_data.get('subject')
-                result = service.search_by_fields(title, authors, abstract, content, subject)
+                start_date = adv_form.cleaned_data.get('start_date')
+                end_date = adv_form.cleaned_data.get('end_date')
+                result = service.search_by_fields(title, authors, abstract, content, subject, start_date, end_date)
             else:
                 return render(request, 'index.html', {'advancedform':adv_form,
                                                       'basicform': BasicSearchForm()})

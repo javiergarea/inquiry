@@ -11,7 +11,7 @@ class InquiryService:
         query_content = Q("wildcard", abstract="*"+keywords+"*")
         query_subject = Q()
         query_other = Q()
-        if subject:
+        if subject and subject!='all':
             query_subject = Q("wildcard", subject="*"+subject+".*")
             query_other = Q("wildcard", other_subjects="*"+subject+".*")
         final_query = Q('bool',
@@ -31,7 +31,7 @@ class InquiryService:
             response.update({'fragment': hit.meta.highlight.abstract})
             yield response
 
-    def search_by_fields(self, title, authors, abstract, content, subject):
+    def search_by_fields(self, title, authors, abstract, content, subject, start_date, end_date):
         search = Search(using=self.es, index="arxiv-index")
         query_title = Q()
         query_authors = Q()
@@ -55,6 +55,8 @@ class InquiryService:
 
         if content:
             query_content = Q("match", pdf=content)
+
+        #search = search.filter('range', submit_date={'gte': start_date , 'lte': end_date})
 
         final_query = Q('bool',
                         must=[query_title, query_authors, query_subject],
