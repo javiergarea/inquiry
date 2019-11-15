@@ -4,21 +4,6 @@ from elasticsearch_dsl import FacetedSearch, TermsFacet
 
 class InquiryService:
 
-    class SubjectSearch(FacetedSearch):
-        # fields that should be searched
-        fields = ['subject']
-
-        facets = {
-            # use bucket aggregations to define facets
-            'subject': TermsFacet(field='subject')
-        }
-
-        def search(self):
-            # override methods to add custom pieces
-            s = super().search()
-            query_title = Q("match", title=subject)
-            return s.query()
-
     def __init__(self):
         self.es = ElasticConnection().connection
 
@@ -43,7 +28,7 @@ class InquiryService:
         request = search.execute()
         for hit in request:
             response = hit.to_dict()
-            response.update({'fragment': hit.meta.highlight.pdf}) 
+            response.update({'fragment': hit.meta.highlight.pdf})
             yield response
 
     def search_by_fields(self, title, authors, subject, abstract, content):
@@ -66,18 +51,3 @@ class InquiryService:
             response = hit.to_dict()
             response.update({'fragment': hit.meta.highlight.pdf}) 
             yield response
-
-    def seach_by_subject(self, query, subject):
-        sub_search = self.SubjectSearch(query, {'subject': subject})
-
-        sub_search = sub_search.source(['title','authors', 'other_subjects'])
-        sub_search = sub_search.highlight_options(order='score')
-        sub_search = sub_search.highlight('pdf', fragment_size=200)
-        suggestion = sub_search.suggest('suggestion', keywords, term={'field': 'pdf'})
-        request = sub_search.execute()
-        for hit in request:
-            response = hit.to_dict()
-            response.update({'fragment': hit.meta.highlight.pdf}) 
-            yield response
-
-
