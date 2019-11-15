@@ -1,6 +1,5 @@
 from elasticsearch_dsl import Search, Q
 from search_engine.elastic_connection import ElasticConnection
-from elasticsearch_dsl import FacetedSearch, TermsFacet
 
 class InquiryService:
 
@@ -16,13 +15,12 @@ class InquiryService:
             query_subject = Q("wildcard", subject="*"+subject+".*")
             query_other = Q("wildcard", other_subjects="*"+subject+".*")
         final_query = Q('bool',
-              must = [query_content],
-              should = [query_subject, query_other],
-              minimum_should_match = 1
-        )
+                        must=[query_content],
+                        should=[query_subject, query_other],
+                        minimum_should_match=1)
         search = search.query(final_query)
 
-        search = search.source(['title','authors', 'subject', 'other_subjects', 'abstract'])
+        search = search.source(['title', 'authors', 'subject', 'other_subjects', 'abstract'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
         suggestion = search.suggest('suggestion', keywords, term={'field': 'pdf'})
@@ -47,7 +45,7 @@ class InquiryService:
         if authors:
             query_authors = Q("wildcard", authors="*"+authors+"*")
 
-        if subject and subject!='all':
+        if subject and subject != 'all':
             query_subject = Q("wildcard", subject="*"+subject+".*")
 
         if abstract:
@@ -59,17 +57,16 @@ class InquiryService:
             query_content = Q("match", pdf=content)
 
         final_query = Q('bool',
-              must = [query_title, query_authors, query_subject],
-              should=[query_abstract, query_content],
-              minimum_should_match=1
-        )
+                        must=[query_title, query_authors, query_subject],
+                        should=[query_abstract, query_content],
+                        minimum_should_match=1)
 
         search = search.query(final_query)
         request = search.execute()
         for hit in request:
             response = hit.to_dict()
             if abstract:
-                response.update({'fragment': hit.meta.highlight.abstract}) 
+                response.update({'fragment': hit.meta.highlight.abstract})
             else:
-                response.update({'fragment': []}) 
+                response.update({'fragment': []})
             yield response
