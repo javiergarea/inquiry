@@ -14,7 +14,7 @@ def index(request):
 def search(request):
     print(request.GET)
     service = InquiryService()
-    result = service.search_by_keywords(request.GET.get('keywords'))
+    result = service.search_by_keywords(request.GET.get('keywords'), request.GET.get('subject'))
     ctx = {"data": result}
     return render(request, 'search.html', ctx)
 

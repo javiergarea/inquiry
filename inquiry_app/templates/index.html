@@ -2,6 +2,9 @@
 <!DOCTYPE html>
 <html lang="es">
 
+{% load crispy_forms_tags %}
+
+
 <head>
   <meta charset="utf-8">
   <title>Inquiry</title>
@@ -13,6 +16,7 @@
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/inquiry.css' %}">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
   <meta name="theme-color" content="#907faf">
 </head>
@@ -43,9 +47,11 @@
     <div class="container-fluid text-center">
       <h1 class="p-3">Open Science</h1>
       <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
-        {{ basicform }}
-        <button type="submit" class="btn btn-primary">Search</button>
-        <button type="reset" class="btn"></button>
+        <div class="input-group form-inline mb-3 justify-content-center">
+          {{ basicform.subject | as_crispy_field }}
+          {{ basicform.keywords | as_crispy_field }}
+          <button type="submit" class="btn btn-primary"> Search </button>
+        </div>
       </form>
       <h5>Advanced search</h5>
       <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
