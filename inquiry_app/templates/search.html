@@ -84,7 +84,7 @@
             </div>
             <div class="p-1">
               <blockquote class="blockquote mb-0">
-                <div class="blockquote-footer">{{x.subject}} and {{x.other_subjects}}</div> 
+                <div class="blockquote-footer">{{x.subject}} {%if x.other_subjects %} also {{x.other_subjects}} {% endif %}</div> 
               </blockquote>
               <br>
             </div>
