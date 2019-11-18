@@ -54,9 +54,11 @@
           </div>
         </form>
       </div>
-      <div class="custom-control custom-switch" data-toggle="collapse" data-target=".multi-collapse" role="button" aria-expanded="false" aria-controls="simpleSearch advancedSearch">
-        <input type="checkbox" class="custom-control-input" id="customSwitches">
-        <label class="custom-control-label" for="customSwitches">Advanced search</label>
+      <div align="center">
+        <div class="custom-control custom-switch col-2" data-toggle="collapse" data-target=".multi-collapse" role="button" aria-expanded="false" aria-controls="simpleSearch advancedSearch">
+          <input type="checkbox" class="custom-control-input" id="customSwitches">
+          <label class="custom-control-label" for="customSwitches">Advanced search</label>
+        </div>
       </div>
       <div id="advancedSearch" class="collapse multi-collapse">
         <form name="AdvForm" role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
