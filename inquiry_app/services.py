@@ -13,10 +13,7 @@ class InquiryService:
         query_subject = Q()
         query_other = Q()
         if subject and subject != 'all':
-            query_subject = Q(
-                "wildcard",
-                subject="*" + subject + ".*",
-                boost=0.5)
+            query_subject = Q("wildcard", subject="*" + subject + ".*")
             query_other = Q("wildcard", other_subjects="*" + subject + ".*")
         final_query = Q('bool',
                         must=[query_content],
@@ -71,7 +68,7 @@ class InquiryService:
                     Q("wildcard", authors="*" + author + "*")
 
         if subject and subject != 'all':
-            query_subject = Q("wildcard", subject="*" + subject + ".*", boost=0.5)
+            query_subject = Q("wildcard", subject="*" + subject + ".*")
             query_other = Q(
                 "wildcard", other_subjects="*" + subject + ".*")
 

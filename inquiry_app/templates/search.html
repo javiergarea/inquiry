@@ -61,26 +61,22 @@
               </ul>
             </div>
             <div class="p-1">
-              {% if x.fragment %}
               <div class="p-1">
                 <div id="summary">
                   <p class="collapse" id="summary{{forloop.counter}}">
-                  {% for fragment in x.fragment %}
-                    {{fragment | safe}}
-                  {% endfor %}
+                  {% if x.fragment %}
+                    [...]
+                    {% for fragment in x.fragment %}
+                      {{fragment | safe}}
+                      [...]
+                    {% endfor %}
+                  {% else %}
+                    {{x.abstract}}
+                  {% endif %}
                   </p>
                   <a class="collapsed" data-toggle="collapse" href="#summary{{forloop.counter}}" aria-expanded="false" aria-controls="summary{{forloop.counter}}"></a>
                 </div>
               </div>
-              {% else %}
-              <div class="container">
-                <div id="summary">
-                  <p class="collapse" id="summary{{forloop.counter}}">
-                    {{x.abstract}}
-                  </p>
-                <a class="collapsed" data-toggle="collapse" href="#summary{{forloop.counter}}" aria-expanded="false" aria-controls="summary{{forloop.counter}}"></a>
-              </div>
-              {% endif %}
             </div>
             <div class="p-1">
               <blockquote class="blockquote mb-0">
