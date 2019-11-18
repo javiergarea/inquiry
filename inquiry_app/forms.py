@@ -16,8 +16,7 @@ class BasicSearchForm(forms.Form):
 
     def clean(self):
         keywords = self.cleaned_data.get('keywords')
-        subject = self.cleaned_data.get('subject')
-        if not (keywords and subject):
+        if not keywords:
             raise ValidationError("You must specify at least one keyword.")
 
 

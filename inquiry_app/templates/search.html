@@ -43,11 +43,12 @@
     <div class="p-4">
     {% for x in data %}
       <div class="py-4">
-        <div class="card" style="width: 72rem;">
+        <div class="card">
           <div class="card-body">
             <h4>
               <a href="{{x.abstract_url}}" class="link">
                 <font color="blue">{{x.title}}</font>
+                {{x.suggestion}}
               </a>
             </h4>
             <div>

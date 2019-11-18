@@ -20,6 +20,10 @@ footer {
     width: 100%;
 }
 
+em {
+    font-weight: bold;
+}
+
 #summary {
   font-size: 14px;
   line-height: 1.5;

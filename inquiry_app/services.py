@@ -28,13 +28,15 @@ class InquiryService:
             ['title', 'authors', 'subject', 'other_subjects', 'abstract', 'pdf_url'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
-        search = search.suggest('suggestion', keywords, term={'field': 'pdf'})
+        search = search.suggest('suggestion', keywords, term={'field': 'abstract'})
 
         request = search.execute()
+        suggestions = [elem["text"] for elem in request.suggest.suggestion[0]["options"]]
+        
         for hit in request:
             response = hit.to_dict()
             response.update({'fragment': hit.meta.highlight.abstract})
-            response.update({'suggestion': request.suggest.suggestion})
+            response.update({'suggestion': suggestions})
             yield response
 
     def search_by_fields(self, title, authors, abstract, content, subject, start_date, end_date):
