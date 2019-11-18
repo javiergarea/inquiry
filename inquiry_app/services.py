@@ -23,21 +23,35 @@ class InquiryService:
                         should=[query_subject, query_other],
                         minimum_should_match=1)
         search = search.query(final_query)
-
         search = search.source(
             ['title', 'authors', 'subject', 'other_subjects', 'abstract', 'pdf_url'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
-        search = search.suggest('suggestion', keywords, term={'field': 'abstract'})
 
+        search = self.extend_query(search, keywords)
         request = search.execute()
-        suggestions = [elem["text"] for elem in request.suggest.suggestion[0]["options"]]
         
         for hit in request:
             response = hit.to_dict()
             response.update({'fragment': hit.meta.highlight.abstract})
-            response.update({'suggestion': suggestions})
             yield response
+
+    def extend_query(self, search, keywords):
+        search = search.suggest('suggestion', keywords, term={'field': 'abstract'})
+        request = search.execute()
+        suggestions = [elem["text"] for elem in request.suggest.suggestion[0]["options"]]
+        suggestion_query = []          
+
+        for suggestion in suggestions:
+            suggestion_query.append(Q("wildcard", abstract="*" + suggestion + "*"))
+
+        final_query = Q('bool',
+                should = suggestion_query,
+                minimum_should_match = 1)
+
+        search = search.query(final_query)
+
+        return search
 
     def search_by_fields(self, title, authors, abstract, content, subject, start_date, end_date):
         search = Search(using=self.es, index="arxiv-index")
