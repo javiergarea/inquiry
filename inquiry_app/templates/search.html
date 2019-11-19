@@ -45,14 +45,8 @@
       <div class="py-4">
         <div class="card">
           <div class="card-body">
-            <h4>
-              <a href="{{x.abstract_url}}" class="link">
-                <font color="blue">{{x.title}}</font>
-              </a>
-            </h4>
-            <div>
-              <a href="{{x.pdf_url}}" class="link text-success">{{x.pdf_url}}</a>
-            </div>
+            <h4><a href="{{x.abstract_url}}" class="card-title link">{{x.title}}</a></h4>
+            <h5><a href="{{x.pdf_url}}" class="card-link small link text-success">{{x.pdf_url}}</a></h5>
             <div class="p-1">
               <ul>
                 {% for author in x.authors %}
@@ -60,29 +54,28 @@
                 {% endfor %}
               </ul>
             </div>
-            <div class="p-1">
-              <div class="p-1">
-                <div id="summary">
-                  <p class="collapse" id="summary{{forloop.counter}}">
-                  {% if x.fragment %}
+            <div class="p-2">
+              <div id="summary">
+                {% if x.fragment %}
+                  <p class="collapse font-italic text-justify" id="summary{{forloop.counter}}">
                     [...]
                     {% for fragment in x.fragment %}
                       {{fragment | safe}}
                       [...]
                     {% endfor %}
-                  {% else %}
-                    {{x.abstract}}
-                  {% endif %}
                   </p>
-                  <a class="collapsed" data-toggle="collapse" href="#summary{{forloop.counter}}" aria-expanded="false" aria-controls="summary{{forloop.counter}}"></a>
-                </div>
+                {% else %}
+                  <p class="collapse text-justify" id="summary{{forloop.counter}}">
+                    {{x.abstract}}
+                  </p>
+                {% endif %}
+                <a class="collapsed" data-toggle="collapse" href="#summary{{forloop.counter}}" aria-expanded="false" aria-controls="summary{{forloop.counter}}"></a>
               </div>
             </div>
             <div class="p-1">
               <blockquote class="blockquote mb-0">
                 <div class="blockquote-footer">{{x.subject}} {%if x.other_subjects %} also {{x.other_subjects}} {% endif %}</div> 
               </blockquote>
-              <br>
             </div>
           </div>
         </div>
