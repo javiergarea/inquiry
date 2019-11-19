@@ -17,8 +17,8 @@ class InquiryService:
             suggestion_query.append(Q('wildcard', abstract='*' + suggestion + '*'))
 
         final_query = Q('bool',
-                should = suggestion_query,
-                minimum_should_match = 0)
+                        should=suggestion_query,
+                        minimum_should_match=0)
 
         search = search.query(final_query)
 
@@ -28,8 +28,8 @@ class InquiryService:
         search = Search(using=self.es, index='arxiv-index')
         query_content = Q()
         for keyword in keywords.split(' '):
-                query_content = query_content + \
-                    Q('wildcard', abstract='*' + keyword + '*')
+            query_content = query_content + \
+                Q('wildcard', abstract='*' + keyword + '*')
         query_subject = Q()
         query_other = Q()
         if subject and subject != 'all':
@@ -40,8 +40,8 @@ class InquiryService:
                         should=[query_subject, query_other],
                         minimum_should_match=1)
         search = search.query(final_query)
-        search = search.source(
-            ['title', 'authors', 'subject', 'other_subjects', 'abstract', 'pdf_url'])
+        search = search.source(['title', 'authors', 'subject', 'other_subjects',
+                                'abstract', 'abstract_url', 'pdf_url'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
 
@@ -95,15 +95,15 @@ class InquiryService:
                         minimum_should_match=2)
 
         search = search.query(final_query)
-        search = search.source(
-            ['title', 'authors', 'subject', 'other_subjects', 'abstract', 'pdf_url'])
+        search = search.source(['title', 'authors', 'subject', 'other_subjects',
+                                'abstract', 'abstract_url', 'pdf_url'])
 
         if abstract:
             search = self._extend_query(search, abstract)
             search = search.highlight_options(order='score')
             search = search.highlight('abstract', fragment_size=400)
         request = search.execute()
-        
+
         for hit in request:
             response = hit.to_dict()
             if 'highlight' in hit.meta:
