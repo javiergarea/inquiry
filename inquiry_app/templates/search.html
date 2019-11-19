@@ -42,18 +42,19 @@
   <main role="main">
     <div class="p-4">
     {% for x in data %}
-      <div class="py-4">
+      <div class="py-4 px-2">
         <div class="card">
           <div class="card-body">
             <h4><a href="{{x.abstract_url}}" class="card-title link">{{x.title}}</a></h4>
             <h5><a href="{{x.pdf_url}}" class="card-link small link text-success">{{x.pdf_url}}</a></h5>
-            <div class="p-1">
-              <ul>
+            <h6 class="py-2 text-secondary">
+              <!-- <ul>
                 {% for author in x.authors %}
                   <li>{{ author }}</li>
                 {% endfor %}
-              </ul>
-            </div>
+              </ul> -->
+              {{ x.authors|join:", "}}
+            <h6>
             <div class="p-2">
               <div id="summary">
                 {% if x.fragment %}
