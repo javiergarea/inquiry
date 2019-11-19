@@ -44,7 +44,7 @@ class InquiryService:
 
         final_query = Q('bool',
                 should = suggestion_query,
-                minimum_should_match = 1)
+                minimum_should_match = 0)
 
         search = search.query(final_query)
 
