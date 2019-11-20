@@ -1,4 +1,5 @@
 {% load static %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -25,8 +26,21 @@
   <header class="border">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="{% url 'inquiry_app:index' %}">
-        <img src="{% static 'img/inquiry.svg' %}" alt="Inquiry Logo" width="180em" class="d-inline-block align-top">
+        <img src="{% static 'img/inquiry.svg' %}" alt="Inquiry Logo" width="180em" class="d-inline-block">
       </a>
+      <div class="container-fluid">
+        <div class="ml-auto">
+          <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
+            <div class="input-group form-inline justify-content-center">
+              {{ basicform.subject | as_crispy_field }}
+              {{ basicform.keywords | as_crispy_field }}
+              <div class="custom-button">
+                <button type="submit" class="btn btn-primary btn-block">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#inquiry_navbar" aria-controls="inquiry_navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

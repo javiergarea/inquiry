@@ -38,7 +38,7 @@ def search(request):
             else:
                 return render(request, 'index.html', {'advancedform':adv_form,
                                                       'basicform': BasicSearchForm()})
-        ctx = {"data": result}
+        ctx = {'data': result, 'advancedform': AdvancedSearchForm(), 'basicform': BasicSearchForm()}
         return render(request, 'search.html', ctx)
     else:
         return render(request, 'index.html', {'basicform':basic_form, 'advancedform':adv_form})

@@ -49,3 +49,11 @@ em {
 #summary a:not(.collapsed):after {
     content: '- Read Less';
 }
+
+#search-bar {
+    padding-top: 20vh;
+}
+
+.custom-button {
+    max-width: 10vh;
+}

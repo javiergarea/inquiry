@@ -1,9 +1,7 @@
 {% load static %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="es">
-
-{% load crispy_forms_tags %}
-
 
 <head>
   <meta charset="utf-8">
@@ -43,14 +41,16 @@
   </header>
 
   <main role="main">
-    <div class="container-fluid text-center">
+    <div id="search-bar" class="container-fluid text-center">
       <h1 class="p-3">Open Science</h1>
       <div id="simpleSearch" class="collapse multi-collapse show">
         <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
-          <div class="input-group form-inline mb-3 justify-content-center">
+          <div class="input-group form-inline pb-3 justify-content-center">
             {{ basicform.subject | as_crispy_field }}
             {{ basicform.keywords | as_crispy_field }}
-            <button type="submit" class="btn btn-primary"> Search </button>
+            <div class="custom-button">
+              <button type="submit" class="btn btn-primary btn-block">Search</button>
+            </div>
           </div>
         </form>
       </div>
