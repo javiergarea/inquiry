@@ -23,7 +23,7 @@
       {% if forloop.first and data.number == 1 %}
         Showing {{25}} of {{x.0}} results
       {%  else %}
-        <div class="py-4 px-2">
+        <div class="p-2">
           <div class="card">
             <div class="card-body">
               <h4><a href="{{ x.abstract_url }}" class="card-title link">{{ x.title }}</a></h4>
@@ -31,7 +31,7 @@
               <h6 class="py-2 text-secondary">
                 {{ x.authors | join:", " }} submitted on {{x.submit_date}}
               <h6>
-              <div class="p-2">
+              <div class="p-1">
                 <div id="summary">
                   {% if x.fragment %}
                     <p class="collapse font-italic text-justify" id="summary{{ forloop.counter }}">
@@ -49,7 +49,7 @@
                   <a class="collapsed" data-toggle="collapse" href="#summary{{ forloop.counter }}" aria-expanded="false" aria-controls="summary{{ forloop.counter }}"></a>
                 </div>
               </div>
-              <div class="p-1">
+              <div class="pt-1 px-1">
                 <blockquote class="blockquote mb-0">
                   <div class="blockquote-footer">{{ x.subject }} {%if x.other_subjects %} also {{ x.other_subjects }} {% endif %}</div> 
                 </blockquote>
