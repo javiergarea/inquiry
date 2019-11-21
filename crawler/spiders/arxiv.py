@@ -47,7 +47,7 @@ class ArxivSpider(scrapy.Spider):
         response.meta.update({'abstract': response.xpath(
             '//*[@id="abs"]/blockquote/text()').extract()[0]})
 
-        date_time_str = response.css('.dateline::text').get().replace('\n  ','')[21:-1]
+        date_time_str = response.css('.dateline::text').get().replace('\n  ', '')[21:-1]
         locale.setlocale(locale.LC_TIME, "en_US")
         if date_time_str:
             date_time = datetime.datetime.strptime(date_time_str, '%d %b %Y')

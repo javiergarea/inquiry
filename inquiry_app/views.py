@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from inquiry_app.forms import BasicSearchForm, AdvancedSearchForm
 from inquiry_app.services import InquiryService
-from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 
 # Create your views here.
@@ -11,6 +10,7 @@ def index(request):
     ctx = {'basicform': BasicSearchForm(),
            'advancedform': AdvancedSearchForm()}
     return render(request, 'index.html', ctx)
+
 
 def search(request):
     service = InquiryService()
@@ -27,8 +27,8 @@ def search(request):
                 page = request.GET.get('page')
                 result_paginated = paginator.get_page(page)
             else:
-                return render(request, 'index.html', {'basicform':basic_form,
-                                                      'advancedform':AdvancedSearchForm()})
+                return render(request, 'index.html', {'basicform': basic_form,
+                                                      'advancedform': AdvancedSearchForm()})
         else:
             adv_form = AdvancedSearchForm(request.GET)
             if adv_form.is_valid():
@@ -45,12 +45,12 @@ def search(request):
                 page = request.GET.get('page')
                 result_paginated = paginator.get_page(page)
             else:
-                return render(request, 'index.html', {'advancedform':adv_form,
+                return render(request, 'index.html', {'advancedform': adv_form,
                                                       'basicform': BasicSearchForm()})
         ctx = {'data': result_paginated, 'advancedform': AdvancedSearchForm(), 'basicform': BasicSearchForm()}
         return render(request, 'search.html', ctx)
     else:
-        return render(request, 'index.html', {'basicform':basic_form, 'advancedform':adv_form})
+        return render(request, 'index.html', {'basicform': basic_form, 'advancedform': adv_form})
 
 
 def about(request):

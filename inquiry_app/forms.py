@@ -10,6 +10,7 @@ SUBJECT_CHOICES = [
     ('all', 'All'),
 ]
 
+
 class BasicSearchForm(forms.Form):
     keywords = forms.CharField(label='', max_length=100)
     subject = forms.CharField(label='', initial='all', widget=forms.Select(choices=SUBJECT_CHOICES))
