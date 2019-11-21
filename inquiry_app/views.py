@@ -2,6 +2,7 @@ from django.shortcuts import render
 from inquiry_app.forms import BasicSearchForm, AdvancedSearchForm
 from inquiry_app.services import InquiryService
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -21,6 +22,10 @@ def search(request):
             if basic_form.is_valid():
                 result = service.search_by_keywords(basic_form.cleaned_data.get('keywords'),
                                                     basic_form.cleaned_data.get('subject'))
+                result_list = [item for item in result]
+                paginator = Paginator(result_list, 25)
+                page = request.GET.get('page')
+                result_paginated = paginator.get_page(page)
             else:
                 return render(request, 'index.html', {'basicform':basic_form,
                                                       'advancedform':AdvancedSearchForm()})
@@ -35,10 +40,14 @@ def search(request):
                 start_date = adv_form.cleaned_data.get('start_date')
                 end_date = adv_form.cleaned_data.get('end_date')
                 result = service.search_by_fields(title, authors, abstract, content, subject, start_date, end_date)
+                result_list = [item for item in result]
+                paginator = Paginator(result_list, 25)
+                page = request.GET.get('page')
+                result_paginated = paginator.get_page(page)
             else:
                 return render(request, 'index.html', {'advancedform':adv_form,
                                                       'basicform': BasicSearchForm()})
-        ctx = {'data': result, 'advancedform': AdvancedSearchForm(), 'basicform': BasicSearchForm()}
+        ctx = {'data': result_paginated, 'advancedform': AdvancedSearchForm(), 'basicform': BasicSearchForm()}
         return render(request, 'search.html', ctx)
     else:
         return render(request, 'index.html', {'basicform':basic_form, 'advancedform':adv_form})

@@ -20,40 +20,65 @@
 {% block main %}
   <div class="p-4">
     {% for x in data %}
-      <div class="py-4 px-2">
-        <div class="card">
-          <div class="card-body">
-            <h4><a href="{{ x.abstract_url }}" class="card-title link">{{ x.title }}</a></h4>
-            <h5><a href="{{ x.pdf_url }}" class="card-link small link text-success">{{ x.pdf_url }}</a></h5>
-            <h6 class="py-2 text-secondary">
-              {{ x.authors | join:", " }}
-            <h6>
-            <div class="p-2">
-              <div id="summary">
-                {% if x.fragment %}
-                  <p class="collapse font-italic text-justify" id="summary{{ forloop.counter }}">
-                    [...]
-                    {% for fragment in x.fragment %}
-                      {{ fragment | safe }}
+      {% if forloop.first and data.number == 1 %}
+        Showing {{25}} of {{x.0}} results
+      {%  else %}
+        <div class="py-4 px-2">
+          <div class="card">
+            <div class="card-body">
+              <h4><a href="{{ x.abstract_url }}" class="card-title link">{{ x.title }}</a></h4>
+              <h5><a href="{{ x.pdf_url }}" class="card-link small link text-success">{{ x.pdf_url }}</a></h5>
+              <h6 class="py-2 text-secondary">
+                {{ x.authors | join:", " }} submitted on {{x.submit_date}}
+              <h6>
+              <div class="p-2">
+                <div id="summary">
+                  {% if x.fragment %}
+                    <p class="collapse font-italic text-justify" id="summary{{ forloop.counter }}">
                       [...]
-                    {% endfor %}
-                  </p>
-                {% else %}
-                  <p class="collapse text-justify" id="summary{{ forloop.counter }}">
-                    {{ x.abstract }}
-                  </p>
-                {% endif %}
-                <a class="collapsed" data-toggle="collapse" href="#summary{{ forloop.counter }}" aria-expanded="false" aria-controls="summary{{ forloop.counter }}"></a>
+                      {% for fragment in x.fragment %}
+                        {{ fragment | safe }}
+                        [...]
+                      {% endfor %}
+                    </p>
+                  {% else %}
+                    <p class="collapse text-justify" id="summary{{ forloop.counter }}">
+                      {{ x.abstract }}
+                    </p>
+                  {% endif %}
+                  <a class="collapsed" data-toggle="collapse" href="#summary{{ forloop.counter }}" aria-expanded="false" aria-controls="summary{{ forloop.counter }}"></a>
+                </div>
               </div>
-            </div>
-            <div class="p-1">
-              <blockquote class="blockquote mb-0">
-                <div class="blockquote-footer">{{ x.subject }} {%if x.other_subjects %} also {{ x.other_subjects }} {% endif %}</div> 
-              </blockquote>
+              <div class="p-1">
+                <blockquote class="blockquote mb-0">
+                  <div class="blockquote-footer">{{ x.subject }} {%if x.other_subjects %} also {{ x.other_subjects }} {% endif %}</div> 
+                </blockquote>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      {% endif %}
     {% endfor %}
+    
+  </div>
+{% endblock %}
+
+{% block paging %}
+  <div class="pagination">
+      <span class="step-links">
+          {% if data.has_previous %}
+              <a href="{% url 'inquiry_app:search' %}?page=1&{{ request.GET.urlencode }}">&laquo; first</a>
+              <a href="{% url 'inquiry_app:search' %}?page={{ data.previous_page_number }}&{{ request.GET.urlencode }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ data.number }} of {{ data.paginator.num_pages }}.
+          </span>
+
+          {% if data.has_next %}
+              <a href="{% url 'inquiry_app:search' %}?page={{ data.next_page_number }}&{{ request.GET.urlencode }}">next</a>
+              <a href="{% url 'inquiry_app:search' %}?page={{ data.paginator.num_pages }}&{{ request.GET.urlencode }}">last &raquo;</a>
+          {% endif %}
+      </span>
   </div>
 {% endblock %}
