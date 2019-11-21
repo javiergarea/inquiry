@@ -1,6 +1,6 @@
 import io
 import scrapy
-import PyPDF2
+import pdftotext
 import datetime
 import locale
 
@@ -58,9 +58,7 @@ class ArxivSpider(scrapy.Spider):
                              meta=response.meta)
 
     def parse_pdf(self, response):
-        reader = PyPDF2.PdfFileReader(io.BytesIO(response.body))
-        pdf = [
-            line for page in reader.pages for line in page.extractText().splitlines()]
-        pdf = ''.join(pdf)
+        reader = pdftotext.PDF(io.BytesIO(response.body))
+        pdf = [page for page in reader]
         response.meta.update({'pdf': pdf})
         yield response.meta

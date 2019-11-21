@@ -8,13 +8,13 @@ class InquiryService:
         self.es = ElasticConnection().connection
 
     def _extend_query(self, search, keywords):
-        search = search.suggest('suggestion', keywords, term={'field': 'abstract'})
+        search = search.suggest('suggestion', keywords, term={'field': 'pdf'})
         request = search.execute()
         suggestions = [elem['text'] for elem in request.suggest.suggestion[0]['options']]
         suggestion_query = []
 
         for suggestion in suggestions:
-            suggestion_query.append(Q('wildcard', abstract='*' + suggestion + '*'))
+            suggestion_query.append(Q('wildcard', pdf='*' + suggestion + '*'))
 
         final_query = Q('bool',
                         should=suggestion_query,
@@ -29,7 +29,7 @@ class InquiryService:
         query_content = Q()
         for keyword in keywords.split(' '):
             query_content = query_content + \
-                Q('wildcard', abstract='*' + keyword + '*')
+                Q('wildcard', pdf='*' + keyword + '*')
         query_subject = Q()
         query_other = Q()
         if subject and subject != 'all':
@@ -43,14 +43,14 @@ class InquiryService:
         search = search.source(['title', 'authors', 'subject', 'other_subjects',
                                 'abstract', 'abstract_url', 'pdf_url'])
         search = search.highlight_options(order='score')
-        search = search.highlight('abstract', fragment_size=400)
+        search = search.highlight('pdf', fragment_size=400)
 
         search = self._extend_query(search, keywords)
         request = search.execute()
 
         for hit in request:
             response = hit.to_dict()
-            response.update({'fragment': hit.meta.highlight.abstract})
+            response.update({'fragment': hit.meta.highlight.pdf})
             yield response
 
     def search_by_fields(self, title, authors, abstract, content, subject, start_date, end_date):
@@ -85,7 +85,7 @@ class InquiryService:
         if content:
             for word in content.split(' '):
                 query_content = query_content + \
-                    Q('wildcard', content='*' + word + '*')
+                    Q('wildcard', pdf='*' + word + '*')
 
         # search = search.filter('range', submit_date={'gte': start_date , 'lte': end_date})
 
@@ -99,15 +99,15 @@ class InquiryService:
                                 'abstract', 'abstract_url', 'pdf_url'])
 
         if abstract:
-            search = self._extend_query(search, abstract)
+            search = self._extend_query(search, content)
             search = search.highlight_options(order='score')
-            search = search.highlight('abstract', fragment_size=400)
+            search = search.highlight('pdf', fragment_size=400)
         request = search.execute()
 
         for hit in request:
             response = hit.to_dict()
             if 'highlight' in hit.meta:
-                response.update({'fragment': hit.meta.highlight.abstract})
+                response.update({'fragment': hit.meta.highlight.pdf})
             else:
                 response.update({'fragment': []})
             yield response
