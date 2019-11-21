@@ -41,7 +41,7 @@ class InquiryService:
                         minimum_should_match=1)
         search = search.query(final_query)
         search = search.source(['title', 'authors', 'subject', 'other_subjects',
-                                'abstract', 'abstract_url', 'pdf_url'])
+                                'abstract', 'abstract_url', 'pdf_url', 'submit_date'])
         search = search.highlight_options(order='score')
         search = search.highlight('abstract', fragment_size=400)
 
@@ -49,7 +49,6 @@ class InquiryService:
         search = search[0:total]
         search = self._extend_query(search, keywords)
         request = search.execute()
-        yield (total, len(request.hits.hits))
 
         for hit in request:
             response = hit.to_dict()
@@ -108,7 +107,6 @@ class InquiryService:
             search = search.highlight_options(order='score')
             search = search.highlight('abstract', fragment_size=400)
         request = search.execute()
-        yield (total, len(request.hits.hits))
 
         for hit in request:
             response = hit.to_dict()
@@ -116,5 +114,4 @@ class InquiryService:
                 response.update({'fragment': hit.meta.highlight.abstract})
             else:
                 response.update({'fragment': []})
-
             yield response

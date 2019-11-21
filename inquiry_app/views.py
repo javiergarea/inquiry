@@ -23,7 +23,7 @@ def search(request):
                 result = service.search_by_keywords(basic_form.cleaned_data.get('keywords'),
                                                     basic_form.cleaned_data.get('subject'))
                 result_list = [item for item in result]
-                paginator = Paginator(result_list, 25)
+                paginator = Paginator(result_list, 15)
                 page = request.GET.get('page')
                 result_paginated = paginator.get_page(page)
             else:
@@ -41,7 +41,7 @@ def search(request):
                 end_date = adv_form.cleaned_data.get('end_date')
                 result = service.search_by_fields(title, authors, abstract, content, subject, start_date, end_date)
                 result_list = [item for item in result]
-                paginator = Paginator(result_list, 25)
+                paginator = Paginator(result_list, 15)
                 page = request.GET.get('page')
                 result_paginated = paginator.get_page(page)
             else:
