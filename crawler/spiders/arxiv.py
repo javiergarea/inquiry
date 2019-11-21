@@ -1,12 +1,14 @@
 import io
 import scrapy
 import PyPDF2
+import datetime
+import locale
 
 ARXIV = 'https://arxiv.org'
-CS_PATH = '/list/cs/1901?skip=0&show=100'
-MATH_PATH = '/list/math/1901?skip=0&show=100'
-PHYSICS_PATH = '/list/physics/1901?skip=0&show=100'
-STAT_PATH = '/list/stat/1901?skip=0&show=100'
+CS_PATH = '/list/cs/1901?skip=0&show=500'
+MATH_PATH = '/list/math/1901?skip=0&show=500'
+PHYSICS_PATH = '/list/physics/1901?skip=0&show=500'
+STAT_PATH = '/list/stat/1901?skip=0&show=500'
 
 
 class ArxivSpider(scrapy.Spider):
@@ -44,7 +46,14 @@ class ArxivSpider(scrapy.Spider):
     def parse_abstract(self, response):
         response.meta.update({'abstract': response.xpath(
             '//*[@id="abs"]/blockquote/text()').extract()[0]})
-        response.meta.update({'submit_date': response.css('.dateline::text').get().replace('\n  ','')[20:-1]})
+
+        date_time_str = response.css('.dateline::text').get().replace('\n  ','')[21:-1]
+        locale.setlocale(locale.LC_TIME, "en_US")
+        if date_time_str:
+            date_time = datetime.datetime.strptime(date_time_str, '%d %b %Y')
+        else:
+            date_time = None
+        response.meta.update({'submit_date': str(date_time)})
         yield scrapy.Request(url=response.meta.get('pdf_url'), callback=self.parse_pdf,
                              meta=response.meta)
 
