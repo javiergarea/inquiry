@@ -1,108 +1,59 @@
-{% load static %}
+{% extends 'base.html' %}
 {% load crispy_forms_tags %}
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
-  <meta charset="utf-8">
-  <title>Inquiry</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="shortcut icon" href="{% static 'img/inquiry_logo_16.png' %}"/>
-  <link rel="shortcut icon" href="{% static 'img/inquiry_logo_32.png' %}"/>
-
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/inquiry.css' %}">
-
-  <meta name="theme-color" content="#907faf">
-</head>
-
-<body>
-  <!--[if IE]>
-    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->
-
-  <header class="border">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'inquiry_app:index' %}">
-        <img src="{% static 'img/inquiry.png' %}" alt="Inquiry Logo" width="180em" class="d-inline-block">
-      </a>
-      <div class="container-fluid">
-        <div class="ml-auto">
-          <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
-            <div class="input-group form-inline justify-content-center">
-              {{ basicform.subject | as_crispy_field }}
-              {{ basicform.keywords | as_crispy_field }}
-              <div class="custom-button">
-                <button type="submit" class="btn btn-primary btn-block">Search</button>
-              </div>
-            </div>
-          </form>
+{% block navbar %}
+  <div class="container-fluid">
+    <div class="ml-auto">
+      <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
+        <div class="input-group form-inline justify-content-center">
+          {{ basicform.subject | as_crispy_field }}
+          {{ basicform.keywords | as_crispy_field }}
+          <div class="custom-button">
+            <button type="submit" class="btn btn-primary btn-block">Search</button>
+          </div>
         </div>
-      </div>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#inquiry_navbar" aria-controls="inquiry_navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="inquiry_navbar">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'inquiry_app:about' %}">About</a>
-          </li>
-      </div>
-    </nav>
-  </header>
+      </form>
+    </div>
+  </div>
+{% endblock %}
 
-  <main role="main">
-    <div class="p-4">
+{% block main %}
+  <div class="p-4">
     {% for x in data %}
       <div class="py-4 px-2">
         <div class="card">
           <div class="card-body">
-            <h4><a href="{{x.abstract_url}}" class="card-title link">{{x.title}}</a></h4>
-            <h5><a href="{{x.pdf_url}}" class="card-link small link text-success">{{x.pdf_url}}</a></h5>
+            <h4><a href="{{ x.abstract_url }}" class="card-title link">{{ x.title }}</a></h4>
+            <h5><a href="{{ x.pdf_url }}" class="card-link small link text-success">{{ x.pdf_url }}</a></h5>
             <h6 class="py-2 text-secondary">
-              {{ x.authors|join:", "}}
+              {{ x.authors | join:", " }}
             <h6>
             <div class="p-2">
               <div id="summary">
                 {% if x.fragment %}
-                  <p class="collapse font-italic text-justify" id="summary{{forloop.counter}}">
+                  <p class="collapse font-italic text-justify" id="summary{{ forloop.counter }}">
                     [...]
                     {% for fragment in x.fragment %}
-                      {{fragment | safe}}
+                      {{ fragment | safe }}
                       [...]
                     {% endfor %}
                   </p>
                 {% else %}
-                  <p class="collapse text-justify" id="summary{{forloop.counter}}">
-                    {{x.abstract}}
+                  <p class="collapse text-justify" id="summary{{ forloop.counter }}">
+                    {{ x.abstract }}
                   </p>
                 {% endif %}
-                <a class="collapsed" data-toggle="collapse" href="#summary{{forloop.counter}}" aria-expanded="false" aria-controls="summary{{forloop.counter}}"></a>
+                <a class="collapsed" data-toggle="collapse" href="#summary{{ forloop.counter }}" aria-expanded="false" aria-controls="summary{{ forloop.counter }}"></a>
               </div>
             </div>
             <div class="p-1">
               <blockquote class="blockquote mb-0">
-                <div class="blockquote-footer">{{x.subject}} {%if x.other_subjects %} also {{x.other_subjects}} {% endif %}</div> 
+                <div class="blockquote-footer">{{ x.subject }} {%if x.other_subjects %} also {{ x.other_subjects }} {% endif %}</div> 
               </blockquote>
             </div>
           </div>
         </div>
       </div>
     {% endfor %}
-    </div>
-  </main>
-
-  <footer class="page-footer font-small border">
-    <div class="footer-copyright text-center p-4">
-      <span>Inquiry, a search engine by <a href="https://github.com/javiergarea">Javier Garea</a> and <a href="https://github.com/MartinSandeCosta">Martín Sande</a>.</span>
-    </div>
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-</body>
-
-</html>
+  </div>
+{% endblock %}
