@@ -18,10 +18,10 @@
 {% endblock %}
 
 {% block main %}
-  Showing {{ data.start_index }} to {{ data.end_index }} of {{ data.paginator.count }} total results
   <div class="p-4">
+    <span class="p-2">Showing: {{ data.start_index }} to {{ data.end_index }} of {{ data.paginator.count }} results.</span>
     {% for x in data %}
-      <div class="py-4 px-2">
+      <div class="p-2">
         <div class="card">
           <div class="card-body">
             <h4><a href="{{ x.abstract_url }}" class="card-title link">{{ x.title }}</a></h4>
@@ -29,7 +29,7 @@
             <h6 class="py-2 text-secondary">
               {{ x.authors | join:", " }} submitted on {{ x.submit_date | truncatechars:11 }}
             <h6>
-            <div class="p-2">
+            <div class="p-1">
               <div id="summary">
                 {% if x.fragment %}
                   <p class="collapse font-italic text-justify" id="summary{{ forloop.counter }}">
@@ -47,7 +47,7 @@
                 <a class="collapsed" data-toggle="collapse" href="#summary{{ forloop.counter }}" aria-expanded="false" aria-controls="summary{{ forloop.counter }}"></a>
               </div>
             </div>
-            <div class="p-1">
+            <div class="pt-1 px-1">
               <blockquote class="blockquote mb-0">
                 <div class="blockquote-footer">{{ x.subject }} {%if x.other_subjects %} also {{ x.other_subjects }} {% endif %}</div> 
               </blockquote>
@@ -61,21 +61,37 @@
 {% endblock %}
 
 {% block paging %}
-  <div class="pagination">
-      <span class="step-links">
-          {% if data.has_previous %}
-              <a href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode }}&page=1">&laquo; first</a>
-              <a href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode }}&page={{ data.previous_page_number }}">previous</a>
-          {% endif %}
-
-          <span class="current">
-              Page {{ data.number }} of {{ data.paginator.num_pages }}.
-          </span>
-
-          {% if data.has_next %}
-              <a href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode}}&page={{ data.next_page_number }}">next</a>
-              <a href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode}}&page={{ data.paginator.num_pages }}">last &raquo;</a>
-          {% endif %}
-      </span>
-  </div>
+  <nav class="container-fluid">
+    <ul class="pagination justify-content-center">
+      {% if data.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode }}&page=1" aria-label="First">
+            <span>First</span>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode }}&page={{ data.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+          </a>
+        </li>
+      {% endif %}
+      <li class="page-item">
+          <a class="page-link" href="#"><span>Page {{ data.number }} of {{ data.paginator.num_pages }}</span></a>
+      </li>
+      {% if data.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode }}&page={{ data.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="{% url 'inquiry_app:search' %}?{{ request.GET.urlencode }}&page={{ data.paginator.num_pages }}" aria-label="Last">
+            <span>Last</span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
 {% endblock %}
