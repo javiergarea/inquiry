@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+  <div id="search-bar" class="container-fluid text-center">
+    <h1 class="p-3">Open Science</h1>
+    <div id="simpleSearch" class="collapse multi-collapse show">
+      <form role="search" action="{% url 'inquiry_app:search' %}" method="get" class="basicform">
+        <div class="input-group form-inline pb-3 justify-content-center">
+          {{ basicform.subject | as_crispy_field }}
+          {{ basicform.keywords | as_crispy_field }}
+          <div class="custom-button">
+            <button type="submit" class="btn btn-primary btn-block">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div align="center">
+      <div class="custom-control custom-switch col-2" data-toggle="collapse" data-target=".multi-collapse" role="button" aria-expanded="false" aria-controls="simpleSearch advancedSearch">
+        <input type="checkbox" class="custom-control-input" id="customSwitches">
+        <label class="custom-control-label" for="customSwitches">Advanced search</label>
+      </div>
+    </div>
+    <div id="advancedSearch" class="collapse multi-collapse p-2">
+      <form name="AdvForm" role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform container-fluid justify-content-center">
+        <div class="d-inline-block">
+            <div>{{ advancedform.title | as_crispy_field }}</div>
+            <div>{{ advancedform.authors | as_crispy_field }}</div>
+            <div>Subject{{ advancedform.subject | as_crispy_field }}</div>
+            <div>{{ advancedform.abstract | as_crispy_field }}</div>
+            <div>{{ advancedform.content | as_crispy_field }}</div>
+        </div>
+        <div class="col" align="center" id=alert_placeholder></div>
+        <button type="submit" class="btn btn-primary" onclick="return submitform();">Search</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

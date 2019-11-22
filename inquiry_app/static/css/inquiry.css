@@ -1,0 +1,59 @@
+html, body {
+    min-height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+header {
+    min-height: 8vh;
+    width: 100%;
+}
+
+main {
+    min-height: calc(100vh - 16vh);
+    width: 100%;
+}
+
+footer {
+    min-height: 8vh;
+    width: 100%;
+}
+
+em {
+    font-weight: bold;
+}
+
+#summary {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#summary p.collapse:not(.show) {
+    height: 42px !important;
+    overflow: hidden;
+  
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+}
+
+#summary p.collapsing {
+    min-height: 42px !important;
+}
+
+#summary a.collapsed:after  {
+    content: '+ Read More';
+}
+
+#summary a:not(.collapsed):after {
+    content: '- Read Less';
+}
+
+#search-bar {
+    padding-top: 20vh;
+}
+
+.custom-button {
+    max-width: 10vh;
+}
