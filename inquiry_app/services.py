@@ -1,3 +1,4 @@
+import re
 from elasticsearch_dsl import Search, Q
 from search_engine.elastic_connection import ElasticConnection
 
@@ -8,13 +9,13 @@ class InquiryService:
         self.es = ElasticConnection().connection
 
     def _extend_query(self, search, keywords):
-        search = search.suggest('suggestion', keywords, term={'field': 'abstract'})
+        search = search.suggest('suggestion', keywords, term={'field': 'pdf'})
         request = search.execute()
         suggestions = [elem['text'] for elem in request.suggest.suggestion[0]['options']]
         suggestion_query = []
 
         for suggestion in suggestions:
-            suggestion_query.append(Q('wildcard', abstract='*' + suggestion + '*'))
+            suggestion_query.append(Q('wildcard', pdf='*' + suggestion + '*'))
 
         final_query = Q('bool',
                         should=suggestion_query,
@@ -27,9 +28,12 @@ class InquiryService:
     def search_by_keywords(self, keywords, subject):
         search = Search(using=self.es, index='arxiv-index')
         query_content = Q()
+        keywords = re.sub('[^A-Za-z0-9 ]+', '', keywords).lower()
         for keyword in keywords.split(' '):
             query_content = query_content + \
-                Q('wildcard', abstract='*' + keyword + '*')
+                (Q('wildcard', pdf='*' + keyword + '*') | \
+                 Q('wildcard', abstract='*' + keyword + '*') | \
+                 Q('wildcard', authors='*' + keyword + '*'))
         query_subject = Q()
         query_other = Q()
         if subject and subject != 'all':
@@ -52,7 +56,10 @@ class InquiryService:
 
         for hit in request:
             response = hit.to_dict()
-            response.update({'fragment': hit.meta.highlight.abstract})
+            if 'highlight' in hit.meta:
+                response.update({'fragment': hit.meta.highlight.abstract})
+            else:
+                response.update({'fragment': []})
             yield response
 
     def search_by_fields(self, title, authors, abstract, content, subject):
@@ -65,11 +72,13 @@ class InquiryService:
         query_content = Q()
 
         if title:
+            title = re.sub('[^A-Za-z0-9 ]+', '', title).lower()
             for word in title.split(' '):
                 query_title = query_title + \
                     Q('wildcard', title='*' + word + '*')
 
         if authors:
+            authors = re.sub('[^A-Za-z0-9 ]+', '', authors).lower()
             for author in authors.split(' '):
                 query_authors = query_authors + \
                     Q('wildcard', authors='*' + author + '*')
@@ -80,11 +89,13 @@ class InquiryService:
                 'wildcard', other_subjects='*' + subject + '.*')
 
         if abstract:
+            abstract = re.sub('[^A-Za-z0-9 ]+', '', abstract).lower()
             for word in abstract.split(' '):
                 query_abstract = query_abstract + \
                     Q('wildcard', abstract='*' + word + '*')
 
         if content:
+            content = re.sub('[^A-Za-z0-9 ]+', '', content).lower()
             for word in content.split(' '):
                 query_content = query_content + \
                     Q('wildcard', pdf='*' + word + '*')
@@ -100,10 +111,13 @@ class InquiryService:
         search = search.source(['title', 'authors', 'subject', 'other_subjects',
                                 'abstract', 'abstract_url', 'pdf_url', 'submit_date'])
 
+        if content:
+            search = self._extend_query(search, content)
         if abstract:
             search = self._extend_query(search, abstract)
-            search = search.highlight_options(order='score')
-            search = search.highlight('abstract', fragment_size=400)
+
+        search = search.highlight_options(order='score')
+        search = search.highlight('abstract', fragment_size=400)
         request = search.execute()
 
         for hit in request:
