@@ -37,9 +37,7 @@ def search(request):
                 abstract = adv_form.cleaned_data.get('abstract')
                 content = adv_form.cleaned_data.get('content')
                 subject = adv_form.cleaned_data.get('subject')
-                start_date = adv_form.cleaned_data.get('start_date')
-                end_date = adv_form.cleaned_data.get('end_date')
-                result = service.search_by_fields(title, authors, abstract, content, subject, start_date, end_date)
+                result = service.search_by_fields(title, authors, abstract, content, subject)
                 result_list = [item for item in result]
                 paginator = Paginator(result_list, 15)
                 page = request.GET.get('page')

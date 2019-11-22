@@ -21,32 +21,14 @@
         <label class="custom-control-label" for="customSwitches">Advanced search</label>
       </div>
     </div>
-    <div id="advancedSearch" class="collapse multi-collapse">
-      <form name="AdvForm" role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform md-form mt-0">
-        <div class="row justify-content-center">
-          <div class="col-3" name="title">
-            {{ advancedform.title | as_crispy_field }}
-          </div>
-          <div class="col-3" name="authors">
-            {{ advancedform.authors | as_crispy_field }}
-          </div>
-        </div>
-        <div class="col" align="center">
-          <div class="row justify-content-center form-inline">
-            <div class="col-3" name="abstract">
-              {{ advancedform.abstract | as_crispy_field }}
-            </div>
-            <div class="col-2" name="subject">
-              {{ advancedform.subject | as_crispy_field }}
-            </div>
-            <div class="col-1">
-                {{ advancedform.start_date | as_crispy_field }}
-                {{ advancedform.end_date | as_crispy_field }}
-            </div>
-          </div>
-          <div class="col-6 centered" name="content">
-            {{ advancedform.content | as_crispy_field }}
-          </div>
+    <div id="advancedSearch" class="collapse multi-collapse p-2">
+      <form name="AdvForm" role="search" action="{% url 'inquiry_app:search' %}" method="get" class="advancedform container-fluid justify-content-center">
+        <div class="d-inline-block">
+            <div>{{ advancedform.title | as_crispy_field }}</div>
+            <div>{{ advancedform.authors | as_crispy_field }}</div>
+            <div>Subject{{ advancedform.subject | as_crispy_field }}</div>
+            <div>{{ advancedform.abstract | as_crispy_field }}</div>
+            <div>{{ advancedform.content | as_crispy_field }}</div>
         </div>
         <div class="col" align="center" id=alert_placeholder></div>
         <button type="submit" class="btn btn-primary" onclick="return submitform();">Search</button>

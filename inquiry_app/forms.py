@@ -1,4 +1,5 @@
 import datetime
+import re
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -17,6 +18,7 @@ class BasicSearchForm(forms.Form):
 
     def clean(self):
         keywords = self.cleaned_data.get('keywords')
+        keywords = re.sub('[^A-Za-z0-9 ]+', '', keywords)
         if not keywords:
             raise ValidationError("You must specify at least one keyword.")
 
@@ -28,14 +30,15 @@ class AdvancedSearchForm(forms.Form):
     content = forms.CharField(label='Content', max_length=100, required=False)
     subject = forms.CharField(label='', initial='all',
                               widget=forms.Select(choices=SUBJECT_CHOICES), required=False)
-    start_date = forms.DateField(initial=(datetime.datetime.now() - datetime.timedelta(days=1*365)),
-                                 required=False)
-    end_date = forms.DateField(initial=datetime.date.today, required=False)
 
     def clean(self):
         title = self.cleaned_data.get('title')
+        title = re.sub('[^A-Za-z0-9 ]+', '', title)
         authors = self.cleaned_data.get('authors')
+        authors = re.sub('[^A-Za-z0-9 ]+', '', authors)
         abstract = self.cleaned_data.get('abstract')
+        abstract = re.sub('[^A-Za-z0-9 ]+', '', abstract)
         content = self.cleaned_data.get('content')
+        content = re.sub('[^A-Za-z0-9 ]+', '', content)
         if not (title or authors or abstract or content):
             raise ValidationError('You must specify at least one field')

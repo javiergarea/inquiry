@@ -55,7 +55,7 @@ class InquiryService:
             response.update({'fragment': hit.meta.highlight.abstract})
             yield response
 
-    def search_by_fields(self, title, authors, abstract, content, subject, from_date, to_date):
+    def search_by_fields(self, title, authors, abstract, content, subject):
         search = Search(using=self.es, index='arxiv-index')
         query_title = Q()
         query_authors = Q()
@@ -88,8 +88,6 @@ class InquiryService:
             for word in content.split(' '):
                 query_content = query_content + \
                     Q('wildcard', pdf='*' + word + '*')
-
-        search = search.filter('range', submit_date = {"from": from_date, "to": to_date})
 
         final_query = Q('bool',
                         must=[query_title, query_authors, query_subject],
