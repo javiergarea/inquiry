@@ -7,7 +7,7 @@
 
 
 import json
-import os
+
 
 class JsonWriterPipeline(object):
 
