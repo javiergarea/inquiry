@@ -27,7 +27,7 @@
             <h4><a href="{{ x.abstract_url }}" class="card-title link">{{ x.title }}</a></h4>
             <h5><a href="{{ x.pdf_url }}" class="card-link small link text-success">{{ x.pdf_url }}</a></h5>
             <h6 class="py-2 text-secondary">
-              {{ x.authors | join:", " }} submitted on {{ x.submit_date | truncatechars:11 }}
+              {{ x.authors | join:", " }} submitted on {{ x.submit_date | slice:"0:10" }}
             <h6>
             <div class="p-1">
               <div id="summary">
