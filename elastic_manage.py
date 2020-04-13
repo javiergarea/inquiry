@@ -6,9 +6,9 @@ from search_engine.indexer import Indexer
 def main(es_connection):
     argparser = argparse.ArgumentParser()
     argparser.add_argument('-i', '--index', type=str,
-                           help='maximum number of models to compute (0 computes all models)')
+                           help='path to index')
     argparser.add_argument('-d', '--delete-index', action='store_true',
-                           help='computes world views under K14 semantics')
+                           help='delete current existing indexes')
     args = argparser.parse_args()
 
     if not (args.index or args.delete_index):
