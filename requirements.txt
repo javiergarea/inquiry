@@ -6,7 +6,7 @@ constantly==15.1.0
 cryptography==3.3.2
 cssselect==1.1.0
 django-crispy-forms==1.8.0
-django==2.2.21
+django==2.2.27
 elasticsearch-dsl==7.1.0
 elasticsearch==7.1.0
 hyperlink==19.0.0
