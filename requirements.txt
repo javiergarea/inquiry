@@ -12,7 +12,7 @@ elasticsearch==7.1.0
 hyperlink==19.0.0
 idna==2.8
 incremental==17.5.0
-lxml==4.6.3 ; python_version != '3.4'
+lxml==4.9.1 ; python_version != '3.4'
 parsel==1.5.2
 pdftotext==2.1.2
 protego==0.1.15
