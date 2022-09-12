@@ -58,7 +58,7 @@ To install **Inquiry**, follow these steps:
 5. Access to [localhost:8000](localhost:8000) and perform your queries.
 
 ## Documentation
-**Inquiry** is an Information Retrieval project. This project has been developed as part of the MSc. in Computer Science at Universidade da Coruña. The software is accompanied by a technical document which details its development. This document is available in web version through the about section of the website (top right side corner).
+**Inquiry** is an Information Retrieval project. This project has been developed as part of the MSc. in Computer Science at Universidade da Coruña. The software is accompanied by a technical document which details its development. This document is available in [web version](https://htmlpreview.github.io/?https://github.com/javiergarea/inquiry/blob/3933a8e345f83e4166455d852a9ac1ad2805c7a1/inquiry_app/templates/about.html).
 
 
 ## Authors
